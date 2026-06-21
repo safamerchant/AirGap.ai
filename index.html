@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,8 +108,8 @@
     <header style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 26px;height:60px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
       <div style="display:flex;align-items:center;gap:13px;min-width:0;">
         <div style="display:flex;flex-direction:column;line-height:1.25;">
-          <div style="font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--text);">Agent Control &#183; Overview</div>
-          <div style="font-family:'DM Sans',system-ui,sans-serif;font-size:10px;color:var(--faint);letter-spacing:.04em;">real-time policy enforcement</div>
+          <div data-pagetitle style="font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--text);">Agent Control &#183; Overview</div>
+          <div data-pagesub style="font-family:'DM Sans',system-ui,sans-serif;font-size:10px;color:var(--faint);letter-spacing:.04em;">real-time policy enforcement</div>
         </div>
         <span style="font-family:'DM Sans',system-ui,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.12em;color:var(--amber);background:var(--amber-weak);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);padding:4px 9px;border-radius:6px;">SANDBOX</span>
       </div>
@@ -136,7 +135,7 @@
         <button id="alarmBannerBtn" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:6px 13px;border-radius:7px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);color:#fff;">Review</button>
       </div>
 
-      <div style="padding:18px 26px 40px;">
+      <div data-page="overview" style="padding:18px 26px 40px;">
 
         <!-- ===== HEADER TICKER ===== -->
         <section style="display:flex;align-items:stretch;gap:0;background:var(--panel);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,69,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 3px 3px -1.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px,rgba(14,63,126,.04) 0px 24px 24px -12px;">
@@ -267,18 +266,74 @@
           </section>
         </div>
 
-        <!-- ===== SIMULATE BAR ===== -->
-        <section style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,69,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 3px 3px -1.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px,rgba(14,63,126,.04) 0px 24px 24px -12px;">
-          <span style="font-family:'DM Sans',system-ui,sans-serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-right:4px;">Inject rogue agent</span>
-          <button id="runDemo" style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;padding:9px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:all .15s;">&#9654; Run demo</button>
-          <button id="injDestruct" data-danger style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Destructive write</button>
-          <button id="injLoop" data-danger style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Runaway loop</button>
-          <button id="injBudget" data-amber style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Spike token budget</button>
-          <button id="resetBtn" style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);transition:all .15s;margin-left:auto;">Reset session</button>
-        </section>
-
         <div style="margin-top:22px;text-align:center;font-family:'DM Sans',system-ui,sans-serif;font-size:10px;color:var(--faint);letter-spacing:.04em;">Usage metered per action &#183; sandbox mode — no action runs against a real system. Verdicts are deterministic. <span style="color:var(--muted);">AirGap.ai</span></div>
       </div>
+
+      <!-- ===== LIVE STREAM PAGE ===== -->
+      <div data-page="livestream" style="display:none;padding:18px 26px 40px;">
+        <section style="background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,70,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px;overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--border);">
+            <div style="font-size:13.5px;font-weight:600;color:var(--text);">Live action stream</div>
+            <div id="lsCount" style="font-size:10.5px;color:var(--faint);">0 actions</div>
+          </div>
+          <div style="overflow:auto;max-height:62vh;">
+            <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+              <thead><tr>
+                <th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Time</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Agent</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Action</th>
+                <th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Target</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Tokens</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Cost</th>
+                <th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Tier</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Verdict</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;" title="Flag an action for later review">Flag</th>
+              </tr></thead>
+              <tbody id="lsBody"></tbody>
+            </table>
+          </div>
+        </section>
+        <div id="lsDetail" style="margin-top:14px;"></div>
+      </div>
+
+      <!-- ===== INCIDENTS PAGE ===== -->
+      <div data-page="incidents" style="display:none;padding:18px 26px 40px;">
+        <div style="display:grid;grid-template-columns:336px 1fr;gap:14px;align-items:start;">
+          <div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;">Incidents</div>
+            <div id="incList"></div>
+          </div>
+          <div id="incDetail"></div>
+        </div>
+        <section style="background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,70,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px;margin-top:16px;padding:16px 18px;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Simulation &amp; demo <span style="font-weight:400;color:var(--faint);font-size:11px;">— sandbox, nothing runs against real systems</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:14px;">
+            <div><button id="runDemo" title="Play a short guided scenario" style="width:100%;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;">&#9654; Run guided demo</button><p style="margin:7px 2px 0;font-size:11px;line-height:1.45;color:var(--muted);">Normal traffic, then one agent turns rogue &mdash; escalates into a single incident.</p></div>
+            <div><button id="injDestruct" data-danger title="Simulate a destructive production write" style="width:100%;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Destructive write</button><p style="margin:7px 2px 0;font-size:11px;line-height:1.45;color:var(--muted);">Agent tries to overwrite a production database &mdash; blocked by policy.</p></div>
+            <div><button id="injLoop" data-danger title="Simulate a runaway call loop" style="width:100%;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Runaway loop</button><p style="margin:7px 2px 0;font-size:11px;line-height:1.45;color:var(--muted);">Agent hammers one endpoint in a tight loop &mdash; blocked as runaway.</p></div>
+            <div><button id="injBudget" data-amber title="Push spend over the token budget" style="width:100%;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Spike token budget</button><p style="margin:7px 2px 0;font-size:11px;line-height:1.45;color:var(--muted);">Spend crosses the budget cap &mdash; escalated for human approval.</p></div>
+            <div><button id="resetBtn" title="Clear everything back to a clean slate" style="width:100%;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);">Reset session</button><p style="margin:7px 2px 0;font-size:11px;line-height:1.45;color:var(--muted);">Wipes activity, incidents and meters.</p></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== AGENTS PAGE ===== -->
+      <div data-page="agents" style="display:none;padding:18px 26px 40px;">
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;">Agent fleet &amp; lifecycle</div>
+        <div id="agentsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;"></div>
+      </div>
+
+      <!-- ===== POLICIES PAGE ===== -->
+      <div data-page="policies" style="display:none;padding:18px 26px 40px;">
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;">Active guardrails</div>
+        <div id="policyList" style="display:flex;flex-direction:column;gap:12px;max-width:780px;"></div>
+      </div>
+
+      <!-- ===== AUDIT PAGE ===== -->
+      <div data-page="audit" style="display:none;padding:18px 26px 40px;">
+        <section style="background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,70,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px;overflow:hidden;">
+          <div style="padding:15px 18px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;color:var(--text);">Audit log <span style="font-weight:400;color:var(--faint);font-size:11px;">— immutable record of every verdict</span></div>
+          <div style="overflow:auto;max-height:64vh;"><table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead><tr><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Time</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Agent</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Action</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Target</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Verdict</th><th style="text-align:left;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;">Reason</th></tr></thead>
+            <tbody id="auditBody"></tbody>
+          </table></div>
+        </section>
+      </div>
+
     </div>
   </div>
 
@@ -370,6 +425,7 @@ class Component extends DCLogic {
     const TIMEOUT_MS=((cmp.props && cmp.props.approvalTimeoutSec!=null)?cmp.props.approvalTimeoutSec:60)*1000;
     let tokens=0, apiCalls=0, riskScore=0, paused=false, killed=false, alertsCount=0;
     let recent=[], preventedSpend=0, haltedCount=0, uid=0;
+    let actions=[]; const incidents=[]; let curIncidentId=null, curActionId=null, curPage='overview';
     let lastMetered=0, baselineJump=null, lastAnomaly=0;
     let spendSamples=[], tokenTimeline=[];
     const pending = []; const agents = [
@@ -396,7 +452,7 @@ class Component extends DCLogic {
     const costOf=(a)=>((a&&a.tokens)?a.tokens:0)*PRICE_TOK+PRICE_CALL;
     const esc=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const agentById=(id)=>agents.find(a=>a.id===id);
-    const pickAgent=()=>{ const av=agents.filter(a=>a.status!=='halted'); return av[rint(0,av.length)]||agents[0]; };
+    const pickAgent=()=>{ const av=agents.filter(a=>a.status!=='halted'&&a.status!=='paused'&&a.status!=='deleted'&&a.status!=='rogue'); return av[rint(0,av.length)]||agents.filter(a=>a.status!=='deleted')[0]||agents[0]; };
     const fmtClock=(ms)=>{ const s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
 
     // ---------- AUDIO (dark-mode alarm) ----------
@@ -534,7 +590,7 @@ class Component extends DCLogic {
         '<div style="font-family:\'DM Sans\',system-ui,sans-serif;font-size:10px;color:var(--accent);margin-top:6px;">'+a.type+' &#8594; '+esc(a.target)+'</div>';
       alertsEl.insertBefore(el,alertsEl.firstChild);
       $('alertMeta').textContent=alertsCount+(alertsCount===1?' incident':' incidents');
-      const nb=$('navIncBadge'); nb.textContent=alertsCount; nb.style.color='var(--redtext)'; nb.style.background='var(--red-weak)'; nb.style.borderColor='color-mix(in srgb,var(--red) 30%,transparent)';
+      /* incident badge is driven by updateIncidentBadge() (open incidents), not alert count */
     }
 
     function pulseIncidents(){
@@ -734,26 +790,29 @@ class Component extends DCLogic {
       recent.push({target:a.target,t:Date.now()}); if(recent.length>60)recent.shift();
       const res=await evaluate(a);
       const ag=agentById(a.agentId)||pickAgent(); a.agentId=ag.id;
+      const rec=logAction(a,res);
       if(res.verdict==='ALLOW'){
         tokens+=a.tokens||0; apiCalls++; ag.tok+=a.tokens||0; ag.spend+=costOf(a);
-        if(ag.status!=='halted'&&ag.status!=='rogue') ag.status = (ag.spend>2.2?'elevated':'ok');
+        if(ag.status==='ok'||ag.status==='elevated') ag.status = (ag.spend>2.2?'elevated':'ok');
         tokenTimeline.push({t:Date.now(),n:a.tokens||0});
-        renderMeters(); renderFleet(); addRow(a,res);
+        renderMeters(); renderFleet(); const row=addRow(a,res); wireRow(row,rec);
       } else {
         haltedCount++; preventedSpend+=costOf(a);
         if(res.hi){ riskScore=Math.min(RISK_LIMIT,riskScore+(res.tags.indexOf('Loop pattern')>=0?1:2)); }
-        if(ag) ag.status = res.verdict==='BLOCK'?'rogue':'elevated';
-        renderMeters(); renderFleet();
-        const row=addRow(a,res); addAlert(a,res);
+        renderMeters();
+        const row=addRow(a,res); rec.rowEl=row; wireRow(row,rec); addAlert(a,res);
         if(spendSamples.length) spendSamples[spendSamples.length-1].anom=true;
-        pulseIncidents();
         if(res.verdict==='APPROVE'){
-          // Borderline action — predefined rules escalate it for a human decision.
-          pending.unshift({id:++uid, action:a, res:res, rowEl:row, modifying:false, expires: TIMEOUT_MS>0?Date.now()+TIMEOUT_MS:0});
-          renderApprovals(); if(!userDismissed) showDrawer();
+          // Borderline action — held for a human decision (capped so it never floods).
+          if(ag.status==='ok') ag.status='elevated'; renderFleet();
+          if(pending.length<6){ pending.unshift({id:++uid, action:a, res:res, rowEl:row, modifying:false, expires: TIMEOUT_MS>0?Date.now()+TIMEOUT_MS:0}); renderApprovals(); if(!userDismissed) showDrawer(); }
+        } else {
+          // BLOCK — agent is behaving destructively: roll into ONE incident for that agent.
+          ag.status='rogue'; renderFleet();
+          escalate(ag,rec);
         }
-        // BLOCK is stopped automatically by policy — logged as an incident, no approval needed.
       }
+      if(curPage==='livestream') renderStreamTable();
     }
     const genSafe=()=>{ const t=safeTemplates[rint(0,safeTemplates.length)]; const ag=pickAgent(); return {type:t.type,target:t.target,payload:t.payload,tokens:rint(t.tokens[0],t.tokens[1]),agentId:ag.id}; };
     const tick=()=>{ if(paused||killed)return; process(genSafe()); };
@@ -801,12 +860,11 @@ class Component extends DCLogic {
     root.querySelectorAll('[data-navitem]').forEach(it=>{
       it.onmouseenter=()=>{ if(it.getAttribute('data-active'))return; it.style.background='var(--panel)'; it.style.color='var(--text)'; };
       it.onmouseleave=()=>{ if(it.getAttribute('data-active'))return; it.style.background='transparent'; it.style.color='var(--muted)'; };
-      it.onclick=()=>{ if(it.getAttribute('data-active'))return; root.querySelectorAll('[data-navitem]').forEach(o=>{ o.removeAttribute('data-active'); o.style.background='transparent'; o.style.color='var(--muted)'; o.style.boxShadow='none'; const bar=o.querySelector('span[style*="position:absolute"]'); if(bar)bar.remove(); const ic=o.querySelector('svg'); if(ic)ic.style.color=''; }); it.setAttribute('data-active','true'); it.style.background='var(--primary)'; it.style.color='#fff'; it.style.boxShadow='0 1px 2px rgba(20,40,70,.12)'; const aic=it.querySelector('svg'); if(aic)aic.style.color='#fff'; };
+      it.onclick=()=>{ const pg=it.getAttribute('data-page'); if(pg) gotoPage(pg); };
     });
 
     // ---------- CONTROLS ----------
     $('statusPill').onclick=()=>toggleDrawer();
-    { const inc=$('navIncidents'); if(inc) inc.addEventListener('click',()=>openDrawer()); }
     $('approvalsBtn').onclick=()=>openDrawer();
     $('drawerClose').onclick=()=>closeDrawer();
     $('alarmBannerBtn').onclick=()=>openDrawer();
@@ -815,21 +873,27 @@ class Component extends DCLogic {
     function runDemo(){
       clearDemo();
       $('resetBtn').click();              // clean slate
+      pause(true);                        // freeze the random stream so only the scripted story plays
       const at=(ms,fn)=>cmp._demoTimers.push(setTimeout(fn,ms));
-      // a few safe actions first — show normal monitoring (all ALLOW)
-      at(500,  ()=>process(genSafe()));
-      at(1700, ()=>process(genSafe()));
-      at(3000, ()=>process(genSafe()));
-      // then three controlled incidents, well spaced
-      at(4600, ()=>$('injDestruct').click());   // BLOCK — destructive on prod
-      at(8600, ()=>$('injLoop').click());       // BLOCK — runaway loop
-      at(12600,()=>$('injBudget').click());     // APPROVE — budget spike
+      // 1) a little normal traffic (ALLOW)
+      at(400,  ()=>process(genSafe()));
+      at(1500, ()=>process(genSafe()));
+      // 2) ONE agent (ops-bot / a3) turns rogue — 3 dangerous actions roll into a single incident
+      at(2800, ()=>process({type:'FS_WRITE',target:'database_prod',payload:{op:'OVERWRITE',data:'rm -rf /var/data'},tokens:rint(800,1600),agentId:'a3'}));
+      at(4300, ()=>process({type:'DB_WRITE',target:'orders_prod',payload:{sql:'DELETE FROM orders WHERE 1=1'},tokens:rint(400,900),agentId:'a3'}));
+      at(5800, ()=>{ const t='payments-api/charge'; for(let i=0;i<RATE_N;i++)recent.push({target:t,t:Date.now()}); process({type:'API_CALL',target:t,payload:{call:'POST /charge',loop:true},tokens:rint(300,700),agentId:'a3'}); });
+      // 3) jump to the Incidents page so the escalation is visible
+      at(6300, ()=>gotoPage('incidents'));
+      // 4) a separate budget warning -> approval side panel
+      at(7800, ()=>$('injBudget').click());
+      // 5) resume gentle monitoring
+      at(9400, ()=>pause(false));
     }
     $('runDemo').onclick=runDemo;
     $('injDestruct').onclick=()=>{ expandNav(); suppressCollapseOnce=true; const a={type:'FS_WRITE',target:'database_prod',payload:{op:'OVERWRITE',data:'rm -rf /var/data'},tokens:rint(800,1600),agentId:'a3'}; const ag=agentById('a3'); process(a); };
     $('injLoop').onclick=()=>{ expandNav(); suppressCollapseOnce=true; const tgt='payments-api/charge'; for(let i=0;i<RATE_N;i++)recent.push({target:tgt,t:Date.now()}); process({type:'API_CALL',target:tgt,payload:{call:'POST /charge',iteration:RATE_N+1},tokens:rint(300,700),agentId:'a2'}); };
-    $('injBudget').onclick=()=>{ expandNav(); suppressCollapseOnce=true; tokens=TOKEN_LIMIT-200; renderMeters(); process({type:'LLM_CALL',target:'summariser',payload:{task:'large batch summarise',batch:500},tokens:1200,agentId:'a4'}); };
-    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[]; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); expandNav(); renderMeters(); renderFleet(); drawChart(); pause(false); };
+    $('injBudget').onclick=()=>{ tokens=TOKEN_LIMIT-200; renderMeters(); process({type:'LLM_CALL',target:'summariser',payload:{task:'large batch summarise',batch:500},tokens:1200,agentId:'a4'}).then(()=>{ tokens=Math.floor(TOKEN_LIMIT*0.55); renderMeters(); }); };
+    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[]; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; actions=[]; incidents.length=0; curIncidentId=null; curActionId=null; updateIncidentBadge(); renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); renderMeters(); renderFleet(); drawChart(); pause(false); if(curPage!=='overview')showPage(curPage); };
     $('pauseBtn').onclick=()=>{ if(killed)return; pause(!paused); };
     this._key=(e)=>{ if(e.key==='Escape') closeDrawer(); };
     document.addEventListener('keydown',this._key);
@@ -838,7 +902,177 @@ class Component extends DCLogic {
     // ---------- BOOT ----------
     applyTheme((cmp.props && cmp.props.theme) || 'light');
     $('capLabel').textContent='/ $'+SPEND_CAP.toFixed(2)+' cap';
+    // ================= MULTI-PAGE + INCIDENTS ENGINE =================
+    const CARDCSS="background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,70,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 6px 6px -3px;";
+    const POLICIES=[
+      {name:'Block destructive actions on production',desc:'Any write, delete, exec or query against a production resource — or a payload containing DROP, DELETE FROM, TRUNCATE, rm -rf or OVERWRITE — is blocked outright.',sev:'Critical'},
+      {name:'Stop runaway loops',desc:'If an agent calls the same target five or more times in quick succession it is blocked as a runaway agent.',sev:'High'},
+      {name:'Token budget guardrail',desc:'When session token spend would cross 50,000, the action is held for human approval instead of running automatically.',sev:'Medium'},
+      {name:'API call budget guardrail',desc:'More than 100 API calls in a session requires human approval before continuing.',sev:'Medium'},
+      {name:'Protected resource deny-list',desc:'Targets matching billing_prod, secrets or payments_prod are always blocked.',sev:'Critical'},
+      {name:'Default allow',desc:'Anything not matched by a rule above is allowed and metered.',sev:'Info'}
+    ];
+    function fmtT(ts){ const d=new Date(ts); return d.toLocaleTimeString('en-GB',{hour12:false}); }
+    function vChip(v){ return v==='ALLOW'?{c:'var(--green)',b:'var(--green-weak)'}:v==='BLOCK'?{c:'var(--redtext)',b:'var(--red-weak)'}:{c:'var(--amber)',b:'var(--amber-weak)'}; }
+    function sevColor(s){ return s==='Critical'?{c:'var(--redtext)',b:'var(--red-weak)'}:s==='High'?{c:'var(--amber)',b:'var(--amber-weak)'}:{c:'var(--muted)',b:'var(--panel2)'}; }
+    function kv(k,v){ return '<div style="background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:9px 10px;"><div style="font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);">'+k+'</div><div style="font-weight:600;margin-top:3px;">'+v+'</div></div>'; }
+
+    function logAction(a,res){
+      const rec={id:++uid,time:Date.now(),agentId:a.agentId,type:a.type,target:a.target,payload:a.payload,tokens:a.tokens||0,cost:costOf(a),tier:tierOf(a),verdict:res.verdict,reason:res.reason,tags:res.tags||[],hi:res.hi,flagged:false,incidentId:null,rowEl:null};
+      actions.unshift(rec); if(actions.length>250)actions.pop();
+      if(curPage==='audit')renderAudit();
+      return rec;
+    }
+    function wireRow(row,rec){ if(!row||!rec)return; row.style.cursor='pointer'; row.title='Open this action in Live Stream'; row.addEventListener('click',()=>{ curActionId=rec.id; gotoPage('livestream'); showActionDetail(rec.id); }); }
+    function openIncidents(){ return incidents.filter(i=>i.status==='open'); }
+    function updateIncidentBadge(){ const nb=$('navIncBadge'); if(!nb)return; const n=openIncidents().length; nb.textContent=n; const on=n>0; nb.style.color=on?'var(--redtext)':'var(--faint)'; nb.style.background=on?'var(--red-weak)':'var(--panel)'; nb.style.borderColor=on?'color-mix(in srgb,var(--red) 30%,transparent)':'var(--border2)'; }
+    function escalate(ag,rec){
+      let inc=incidents.find(i=>i.agentId===ag.id&&i.status==='open'); let isNew=false;
+      if(!inc){ inc={id:++uid,agentId:ag.id,opened:Date.now(),status:'open',actionIds:[],sev:'High'}; incidents.unshift(inc); isNew=true; }
+      inc.actionIds.unshift(rec.id); rec.incidentId=inc.id;
+      if(/Irreversible|High impact/.test((rec.tags||[]).join(' '))) inc.sev='Critical';
+      if(isNew)pulseIncidents();
+      updateIncidentBadge();
+      if(curPage==='incidents')renderIncidents();
+    }
+    function setAgentStatus(id,st){ const a=agentById(id); if(!a)return; a.status=st; renderFleet(); if(curPage==='agents')renderAgentsPage(); }
+
+    const PAGE_META={overview:['Agent Control \u00b7 Overview','real-time policy enforcement'],livestream:['Live Stream','full action log \u00b7 click a row for detail'],incidents:['Incidents','escalated agent activity'],agents:['Agents','fleet status & lifecycle'],policies:['Policies','guardrails the firewall enforces'],audit:['Audit Log','immutable verdict history']};
+    function showPage(name){
+      if(!PAGE_META[name])name='overview'; curPage=name;
+      root.querySelectorAll('[data-page]').forEach(p=>{ p.style.display = p.getAttribute('data-page')===name?'':'none'; });
+      const t=root.querySelector('[data-pagetitle]'), su=root.querySelector('[data-pagesub]');
+      if(t)t.textContent=PAGE_META[name][0]; if(su)su.textContent=PAGE_META[name][1];
+      if(name==='livestream')renderStreamTable(); else if(name==='incidents')renderIncidents(); else if(name==='agents')renderAgentsPage(); else if(name==='policies')renderPolicies(); else if(name==='audit')renderAudit();
+    }
+    function gotoPage(name){
+      root.querySelectorAll('[data-navitem]').forEach(o=>{ const act=o.getAttribute('data-page')===name; if(act){ o.setAttribute('data-active','true'); o.style.background='var(--primary)'; o.style.color='#fff'; o.style.boxShadow='0 1px 2px rgba(20,40,70,.12)'; const ic=o.querySelector('svg'); if(ic)ic.style.color='#fff'; } else { o.removeAttribute('data-active'); o.style.background='transparent'; o.style.color='var(--muted)'; o.style.boxShadow='none'; const b=o.querySelector('span[style*="position:absolute"]'); if(b)b.remove(); const ic=o.querySelector('svg'); if(ic)ic.style.color=''; } });
+      showPage(name);
+    }
+
+    function renderStreamTable(){
+      const b=$('lsBody'); if(!b)return; const c=$('lsCount'); if(c)c.textContent=actions.length+' action'+(actions.length===1?'':'s');
+      if(!actions.length){ b.innerHTML='<tr><td colspan="9" style="padding:34px;text-align:center;color:var(--faint);font-size:12px;">No actions yet — start the stream or run a demo.</td></tr>'; return; }
+      const td='padding:9px 12px;border-bottom:1px solid var(--border2);white-space:nowrap;';
+      b.innerHTML=actions.map(r=>{ const ag=agentById(r.agentId)||{name:'\u2014'}; const vc=vChip(r.verdict); const tc=tierColor(r.tier);
+        return '<tr data-aid="'+r.id+'" style="cursor:pointer;">'
+          +'<td style="'+td+'color:var(--muted);font-size:11px;">'+fmtT(r.time)+'</td>'
+          +'<td style="'+td+'">'+ag.name+'</td>'
+          +'<td style="'+td+'font-weight:600;">'+r.type+'</td>'
+          +'<td style="'+td+'color:var(--accent);">'+esc(r.target)+'</td>'
+          +'<td style="'+td+'">'+r.tokens+'</td>'
+          +'<td style="'+td+'">$'+r.cost.toFixed(2)+'</td>'
+          +'<td style="'+td+'"><span style="font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;color:'+tc.c+';background:'+tc.b+';">'+r.tier+'</span></td>'
+          +'<td style="'+td+'"><span style="font-size:9.5px;font-weight:700;padding:4px 8px;border-radius:6px;color:'+vc.c+';background:'+vc.b+';">'+r.verdict+'</span></td>'
+          +'<td style="'+td+'text-align:center;"><span data-flag="'+r.id+'" title="Flag this action for review" style="cursor:pointer;font-size:15px;color:'+(r.flagged?'var(--amber)':'var(--faint)')+';">'+(r.flagged?'\u2605':'\u2606')+'</span></td>'
+          +'</tr>';
+      }).join('');
+    }
+    function showActionDetail(id){
+      curActionId=id; const r=actions.find(x=>x.id===id); const d=$('lsDetail'); if(!d||!r)return;
+      const ag=agentById(r.agentId)||{name:'\u2014',role:''}; const vc=vChip(r.verdict); const tc=tierColor(r.tier);
+      d.innerHTML='<section style="'+CARDCSS+'padding:16px 18px;">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">'
+          +'<div style="font-size:14px;font-weight:600;">'+r.type+' <span style="color:var(--faint);">\u2192</span> <span style="color:var(--accent);">'+esc(r.target)+'</span></div>'
+          +'<div style="display:flex;gap:7px;align-items:center;"><span style="font-size:9px;font-weight:700;padding:4px 8px;border-radius:6px;color:'+tc.c+';background:'+tc.b+';">'+r.tier+'</span><span style="font-size:9.5px;font-weight:700;padding:4px 9px;border-radius:6px;color:'+vc.c+';background:'+vc.b+';">'+r.verdict+'</span><span data-flag2 style="cursor:pointer;font-size:17px;color:'+(r.flagged?'var(--amber)':'var(--faint)')+';" title="Flag">'+(r.flagged?'\u2605':'\u2606')+'</span></div>'
+        +'</div>'
+        +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;font-size:11px;">'+kv('Agent',ag.name+(ag.role?' \u00b7 '+ag.role:''))+kv('Time',new Date(r.time).toLocaleString('en-GB'))+kv('Tokens',r.tokens)+kv('Cost','$'+r.cost.toFixed(2))+'</div>'
+        +'<div style="margin-top:12px;font-size:12.5px;color:var(--text);border-left:3px solid '+vc.c+';padding-left:11px;">'+esc(r.reason||'')+'</div>'
+        +'<div style="margin-top:8px;font-size:11px;color:var(--redtext);">Blast radius: '+blastRadius(r)+'</div>'
+        +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">'+(r.tags||[]).map(t=>'<span style="font-size:9.5px;font-weight:600;padding:4px 9px;border-radius:6px;border:1px solid var(--border);color:var(--muted);">'+t+'</span>').join('')+'</div>'
+        +'<pre style="margin:12px 0 0;font-size:11px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow:auto;">'+esc(JSON.stringify(r.payload||{},null,2))+'</pre>'
+        +(r.incidentId?'<div style="margin-top:10px;"><button data-gotoinc style="font-size:12px;font-weight:600;cursor:pointer;padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">View related incident \u2192</button></div>':'')
+        +'</section>';
+      const g=d.querySelector('[data-gotoinc]'); if(g)g.onclick=()=>{ curIncidentId=r.incidentId; gotoPage('incidents'); };
+      const f=d.querySelector('[data-flag2]'); if(f)f.onclick=()=>{ r.flagged=!r.flagged; renderStreamTable(); showActionDetail(id); };
+    }
+
+    function renderIncidents(){
+      const list=$('incList'); if(!list)return;
+      if(!incidents.length){ list.innerHTML='<div style="color:var(--faint);font-size:12px;padding:16px;border:1px dashed var(--border);border-radius:12px;">No incidents yet. Run the demo or inject a rogue agent below.</div>'; const dd=$('incDetail'); if(dd)dd.innerHTML=''; return; }
+      if(curIncidentId==null||!incidents.find(i=>i.id===curIncidentId)) curIncidentId=incidents[0].id;
+      list.innerHTML=incidents.map(inc=>{ const ag=agentById(inc.agentId)||{name:'\u2014'}; const sc=sevColor(inc.sev); const sel=inc.id===curIncidentId; const stxt=inc.status==='open'?'OPEN':inc.status==='paused'?'CONTAINED':'RESOLVED';
+        return '<div data-inc="'+inc.id+'" style="cursor:pointer;border:1px solid '+(sel?'var(--accent)':'var(--border)')+';border-radius:12px;padding:12px 13px;margin-bottom:10px;background:'+(sel?'var(--accent-weak)':'var(--panel)')+';">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">'+ag.name+'</span><span style="font-size:8.5px;font-weight:700;padding:3px 7px;border-radius:5px;color:'+sc.c+';background:'+sc.b+';">'+inc.sev+'</span></div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+inc.actionIds.length+' related action'+(inc.actionIds.length===1?'':'s')+' \u00b7 '+stxt+'</div>'
+          +'<div style="font-size:10px;color:var(--faint);margin-top:3px;">opened '+fmtT(inc.opened)+'</div></div>';
+      }).join('');
+      list.querySelectorAll('[data-inc]').forEach(el=>el.onclick=()=>{ curIncidentId=+el.getAttribute('data-inc'); renderIncidents(); });
+      renderIncidentDetail();
+    }
+    function renderIncidentDetail(){
+      const d=$('incDetail'); if(!d)return; const inc=incidents.find(i=>i.id===curIncidentId); if(!inc){ d.innerHTML=''; return; }
+      const ag=agentById(inc.agentId)||{name:'\u2014',role:'',spend:0}; const sc=sevColor(inc.sev);
+      const logs=inc.actionIds.map(id=>actions.find(a=>a.id===id)).filter(Boolean); const paused=ag.status==='paused';
+      d.innerHTML='<section style="'+CARDCSS+'padding:18px;">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">'
+          +'<div><div style="font-size:16px;font-weight:600;">'+ag.name+' <span style="font-size:11px;color:var(--faint);font-weight:400;">'+(ag.role||'')+'</span></div><div style="font-size:11px;color:var(--muted);margin-top:4px;">Incident #'+inc.id+' \u00b7 opened '+new Date(inc.opened).toLocaleString('en-GB')+'</div></div>'
+          +'<span style="font-size:9px;font-weight:700;padding:5px 9px;border-radius:6px;color:'+sc.c+';background:'+sc.b+';">'+inc.sev+' \u00b7 '+inc.status.toUpperCase()+'</span>'
+        +'</div>'
+        +'<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">'
+          +(paused?'<button data-resume style="font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid color-mix(in srgb,var(--green) 40%,transparent);background:var(--green-weak);color:var(--green);">Resume agent</button>':'<button data-pause title="Stop this agent from taking any further actions" style="font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid color-mix(in srgb,var(--red) 40%,transparent);background:var(--red-weak);color:var(--redtext);">\u2016 Pause agent</button>')
+          +(inc.status!=='resolved'?'<button data-resolve style="font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Mark resolved</button>':'')
+        +'</div>'
+        +'<div style="margin-top:16px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);">Related logs ('+logs.length+')</div>'
+        +'<div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto;">'
+        +logs.map(r=>{ const vc=vChip(r.verdict); return '<div style="border:1px solid var(--border2);border-radius:9px;padding:10px 12px;background:var(--panel2);">'
+            +'<div style="display:flex;justify-content:space-between;gap:8px;"><span style="font-weight:600;font-size:12px;">'+r.type+' <span style="color:var(--faint);">\u2192</span> <span style="color:var(--accent);">'+esc(r.target)+'</span></span><span style="font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;color:'+vc.c+';background:'+vc.b+';">'+r.verdict+'</span></div>'
+            +'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+esc(r.reason||'')+'</div>'
+            +'<div style="font-size:10px;color:var(--faint);margin-top:4px;">'+fmtT(r.time)+' \u00b7 '+r.tokens+' tok \u00b7 $'+r.cost.toFixed(2)+'</div></div>'; }).join('')
+        +'</div></section>';
+      const pb=d.querySelector('[data-pause]'); if(pb)pb.onclick=()=>{ setAgentStatus(ag.id,'paused'); inc.status='paused'; updateIncidentBadge(); renderIncidents(); };
+      const rb=d.querySelector('[data-resume]'); if(rb)rb.onclick=()=>{ setAgentStatus(ag.id,'ok'); inc.status='open'; updateIncidentBadge(); renderIncidents(); };
+      const rs=d.querySelector('[data-resolve]'); if(rs)rs.onclick=()=>{ inc.status='resolved'; setAgentStatus(ag.id,'ok'); updateIncidentBadge(); renderIncidents(); };
+    }
+
+    function agentStatusMeta(s){ return s==='paused'?{t:'PAUSED',c:'var(--amber)',d:'var(--amber)'}:s==='deleted'?{t:'DELETED',c:'var(--faint)',d:'var(--faint)'}:s==='rogue'?{t:'ROGUE',c:'var(--redtext)',d:'var(--red)'}:s==='halted'?{t:'HALTED',c:'var(--faint)',d:'var(--faint)'}:s==='elevated'?{t:'ELEVATED',c:'var(--amber)',d:'var(--amber)'}:{t:'AVAILABLE',c:'var(--green)',d:'var(--green)'}; }
+    function renderAgentsPage(){
+      const w=$('agentsList'); if(!w)return;
+      w.innerHTML=agents.map(a=>{ const m=agentStatusMeta(a.status); const acts=actions.filter(x=>x.agentId===a.id).length; const del=a.status==='deleted';
+        return '<div style="'+CARDCSS+'padding:15px 16px;opacity:'+(del?'.55':'1')+';">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:'+m.d+';"></span><span style="font-weight:600;font-size:13.5px;">'+a.name+'</span></div><span style="font-size:8.5px;font-weight:700;letter-spacing:.08em;color:'+m.c+';">'+m.t+'</span></div>'
+          +'<div style="font-size:11px;color:var(--faint);margin-top:6px;">'+a.role+'</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;font-size:11px;">'+kv('Spend','$'+a.spend.toFixed(2))+kv('Tokens',a.tok)+kv('Actions',acts)+'</div>'
+          +'<div style="display:flex;gap:7px;margin-top:12px;">'
+            +(del?'<button data-restore="'+a.id+'" style="flex:1;font-size:12px;font-weight:600;cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Restore</button>':(a.status==='paused'?'<button data-resume2="'+a.id+'" style="flex:1;font-size:12px;font-weight:600;cursor:pointer;padding:8px;border-radius:8px;border:1px solid color-mix(in srgb,var(--green) 40%,transparent);background:var(--green-weak);color:var(--green);">Resume</button>':'<button data-pause2="'+a.id+'" title="Pause this agent" style="flex:1;font-size:12px;font-weight:600;cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);">Pause</button>')+'<button data-del="'+a.id+'" title="Remove this agent" style="font-size:12px;font-weight:600;cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid color-mix(in srgb,var(--red) 35%,transparent);background:var(--red-weak);color:var(--redtext);">Delete</button>')
+          +'</div></div>';
+      }).join('');
+      w.querySelectorAll('[data-pause2]').forEach(b=>b.onclick=()=>setAgentStatus(b.getAttribute('data-pause2'),'paused'));
+      w.querySelectorAll('[data-resume2]').forEach(b=>b.onclick=()=>setAgentStatus(b.getAttribute('data-resume2'),'ok'));
+      w.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>setAgentStatus(b.getAttribute('data-del'),'deleted'));
+      w.querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>setAgentStatus(b.getAttribute('data-restore'),'ok'));
+    }
+    function renderPolicies(){
+      const w=$('policyList'); if(!w)return;
+      w.innerHTML=POLICIES.map(p=>'<div style="'+CARDCSS+'padding:15px 17px;">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><div style="font-weight:600;font-size:13.5px;">'+p.name+'</div><span style="font-size:9px;font-weight:700;padding:4px 9px;border-radius:6px;color:var(--green);background:var(--green-weak);">ENFORCED</span></div>'
+        +'<div style="font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px;">'+p.desc+'</div>'
+        +'<div style="font-size:9.5px;color:var(--faint);margin-top:8px;">Severity: '+p.sev+'</div></div>').join('');
+    }
+    function renderAudit(){
+      const b=$('auditBody'); if(!b)return; const td='padding:8px 12px;border-bottom:1px solid var(--border2);';
+      if(!actions.length){ b.innerHTML='<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--faint);">No events recorded.</td></tr>'; return; }
+      b.innerHTML=actions.map(r=>{ const ag=agentById(r.agentId)||{name:'\u2014'}; const vc=vChip(r.verdict);
+        return '<tr><td style="'+td+'color:var(--muted);font-size:11px;white-space:nowrap;">'+fmtT(r.time)+'</td><td style="'+td+'">'+ag.name+'</td><td style="'+td+'">'+r.type+'</td><td style="'+td+'color:var(--accent);">'+esc(r.target)+'</td><td style="'+td+'"><span style="font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;color:'+vc.c+';background:'+vc.b+';">'+r.verdict+'</span></td><td style="'+td+'color:var(--muted);font-size:11px;">'+esc(r.reason||'')+'</td></tr>';
+      }).join('');
+    }
+    function setupPages(){
+      const navOrder=['overview','livestream','policies','incidents','agents','audit'];
+      const navTips={overview:'System overview \u2014 live metrics, spend and fleet health',livestream:'Live Stream \u2014 full log of every agent action; click a row for detail',policies:'Policies \u2014 the guardrails the firewall enforces',incidents:'Incidents \u2014 escalated rogue-agent events and related logs',agents:'Agents \u2014 fleet status, history and lifecycle',audit:'Audit Log \u2014 immutable record of every verdict'};
+      root.querySelectorAll('[data-navitem]').forEach((it,i)=>{ const pg=navOrder[i]; if(pg){ it.setAttribute('data-page',pg); it.title=navTips[pg]; } });
+      const lsb=$('lsBody'); if(lsb)lsb.addEventListener('click',(e)=>{ const fl=e.target.closest('[data-flag]'); if(fl){ const id=+fl.getAttribute('data-flag'); const r=actions.find(x=>x.id===id); if(r){ r.flagged=!r.flagged; renderStreamTable(); } return; } const tr=e.target.closest('[data-aid]'); if(tr)showActionDetail(+tr.getAttribute('data-aid')); });
+      const tip=(id,t)=>{ const e=$(id); if(e)e.title=t; };
+      tip('killBtn','Kill switch \u2014 immediately freeze every agent; nothing executes');
+      tip('pauseBtn','Pause or resume the live action stream');
+      tip('statusPill','Open the approval side panel');
+      tip('approvalsBtn','Actions awaiting your approval');
+      tip('runDemo','Play a short guided scenario');
+      tip('resetBtn','Clear all activity and start fresh');
+      const ts=root.querySelector('[data-themeswitch]'); if(ts)ts.title='Switch between light and dark themes';
+    }
+
     tripBreaker(false); renderMeters(); renderFleet(); renderApprovals(); drawChart(); pingBackend(); startLoop();
+    setupPages(); updateIncidentBadge(); showPage('overview');
     this._hb=setInterval(heartbeat,1000);
   }
 }
