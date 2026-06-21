@@ -297,9 +297,326 @@
       .built-with { text-align: left; }
       .bottom-row { flex-direction: column; align-items: flex-start; }
     }
+
+    /* ── ONBOARDING MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(31, 37, 48, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      animation: overlay-in 0.25s ease both;
+    }
+    .modal-overlay[hidden] { display: none; }
+    @keyframes overlay-in { from { opacity: 0 } to { opacity: 1 } }
+
+    .modal-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      box-shadow: 0 24px 60px rgba(31, 37, 48, 0.22);
+      width: 100%;
+      max-width: 560px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      animation: card-in 0.3s cubic-bezier(.2,.7,.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(14px) }
+      to   { opacity: 1; transform: translateY(0) }
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .modal-head-left { display: flex; align-items: center; gap: 10px; }
+    .modal-head .logo-wordmark { font-size: 16px; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--muted);
+      padding: 4px 6px;
+      border-radius: 3px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .modal-close:hover { color: var(--ink); background: var(--rule); }
+
+    .modal-body { padding: 26px; }
+
+    .modal-eyebrow {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .modal-title .green { color: var(--green); }
+    .modal-intro {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--sub);
+    }
+
+    /* Section label */
+    .modal-section-label {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 26px 0 12px;
+      padding-top: 18px;
+      border-top: 1px solid var(--rule);
+    }
+
+    /* Flow rows: Intercept / Score / Decide */
+    .modal-flow { display: flex; flex-direction: column; gap: 10px; }
+    .flow-row { display: flex; align-items: flex-start; gap: 12px; }
+    .flow-tag {
+      flex-shrink: 0;
+      width: 84px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .flow-tag .pdot { width: 5px; height: 5px; border-radius: 50%; }
+    .flow-tag.intercept { color: #C0391B; background: rgba(192,57,27,.08); border-color: rgba(192,57,27,.25); }
+    .flow-tag.intercept .pdot { background: #C0391B; }
+    .flow-tag.score { color: var(--amber); background: var(--amber-bg); border-color: rgba(181,120,15,.3); }
+    .flow-tag.score .pdot { background: var(--amber); }
+    .flow-tag.decide { color: var(--green); background: rgba(246,133,31,.10); border-color: rgba(246,133,31,.3); }
+    .flow-tag.decide .pdot { background: var(--green); }
+    .flow-text {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--sub);
+      padding-top: 2px;
+    }
+    .flow-text b { color: var(--ink); font-weight: 700; }
+
+    /* Callout: where the demo button lives */
+    .modal-callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 4px;
+      padding: 14px 16px;
+      background: rgba(246,133,31,.07);
+      border: 1px solid rgba(246,133,31,.25);
+      border-radius: 4px;
+    }
+    .modal-callout .ico {
+      flex-shrink: 0;
+      font-size: 15px;
+      color: var(--green);
+      line-height: 1.4;
+    }
+    .modal-callout p {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--sub);
+    }
+    .modal-callout b { color: var(--ink); }
+    .modal-callout .mono {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      padding: 1px 6px;
+    }
+
+    /* Under-the-hood list */
+    .modal-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .modal-list li {
+      display: flex;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--sub);
+    }
+    .modal-list li::before {
+      content: "";
+      flex-shrink: 0;
+      width: 6px; height: 6px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+    .modal-list li b { color: var(--ink); font-weight: 700; }
+
+    /* Footer */
+    .modal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 26px;
+      border-top: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .modal-foot .built-with { text-align: left; }
+    .modal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--bg);
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
+      padding: 11px 22px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .modal-cta:hover { background: var(--green); border-color: var(--green); }
+    .modal-cta .cta-arrow { font-size: 15px; transition: transform 0.15s; }
+    .modal-cta:hover .cta-arrow { transform: translateX(3px); }
+
+    /* Highlight the real demo button after the modal closes */
+    .cta-btn.spotlight {
+      animation: spotlight 1.1s ease-in-out 3;
+    }
+    @keyframes spotlight {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(246,133,31,0); }
+      50%      { box-shadow: 0 0 0 6px rgba(246,133,31,.28); }
+    }
+
+    @media (max-width: 600px) {
+      .modal-body, .modal-head, .modal-foot { padding-left: 20px; padding-right: 20px; }
+      .modal-title { font-size: 22px; }
+      .modal-foot { flex-direction: column-reverse; align-items: stretch; }
+      .modal-cta { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal-overlay, .modal-card { animation: none; }
+      .cta-btn.spotlight { animation: none; outline: 2px solid var(--green); outline-offset: 3px; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ONBOARDING MODAL (shows on first open) -->
+  <div class="modal-overlay" id="introModal" role="dialog" aria-modal="true" aria-labelledby="introTitle" hidden>
+    <div class="modal-card">
+
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="2" y1="16" x2="9" y2="16" stroke="#1F2530" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="9" cy="16" r="2" fill="#1F2530"/>
+            <circle cx="23" cy="16" r="2" fill="#1F2530"/>
+            <line x1="23" y1="16" x2="30" y2="16" stroke="#1F2530" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9" y1="16" x2="21" y2="9" stroke="#F6851F" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="22" cy="8.5" r="1.2" fill="#F6851F" opacity="0.6"/>
+          </svg>
+          <div class="logo-wordmark">AirGap<span class="dot-ai">.ai</span></div>
+        </div>
+        <button class="modal-close" id="introClose" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-eyebrow">Welcome · Sandbox mode</div>
+        <h2 class="modal-title" id="introTitle">
+          A circuit breaker for<br><span class="green">autonomous AI agents.</span>
+        </h2>
+        <p class="modal-intro">
+          AirGap.ai is a middleware proxy plus a live control dashboard. It sits between your
+          agent and the outside world, so the agent can act freely on the safe side of the
+          breaker while your real systems stay isolated from anything risky.
+        </p>
+
+        <div class="modal-section-label">How every action is handled</div>
+        <div class="modal-flow">
+          <div class="flow-row">
+            <span class="flow-tag intercept"><span class="pdot"></span>Intercept</span>
+            <span class="flow-text">Every tool call the agent attempts is caught <b>before</b> it executes.</span>
+          </div>
+          <div class="flow-row">
+            <span class="flow-tag score"><span class="pdot"></span>Score</span>
+            <span class="flow-text">Each action is rated against your <b>spend budgets and risk bounds</b>.</span>
+          </div>
+          <div class="flow-row">
+            <span class="flow-tag decide"><span class="pdot"></span>Decide</span>
+            <span class="flow-text">Safe actions pass through; anything over the line is held for <b>one-click human approval</b>. The kill switch halts everything instantly.</span>
+          </div>
+        </div>
+
+        <div class="modal-section-label">Where to start</div>
+        <div class="modal-callout">
+          <span class="ico">→</span>
+          <p>
+            Hit <b>Demo the product</b> at the bottom of this page (or <span class="mono">Console</span>
+            in the top-right) to open the live control dashboard. That's where you'll watch agent
+            actions get intercepted, scored, and approved or blocked in real time.
+          </p>
+        </div>
+
+        <div class="modal-section-label">Under the hood · what the demo uses</div>
+        <ul class="modal-list">
+          <li><b>Simulated agent traffic.</b> Everything runs in a sandbox — the actions are mock requests, so no real accounts, payments, or systems are ever touched.</li>
+          <li><b>Action logs are the core data.</b> Each intercepted action carries a risk score, a budget impact, and an approve / deny / pending state that drives the dashboard.</li>
+          <li><b>Policies you control.</b> Budgets, risk thresholds, and the kill switch decide what passes automatically and what waits for you.</li>
+          <li><b>Nothing leaves the sandbox.</b> The whole flow is safe to click through end to end.</li>
+        </ul>
+      </div>
+
+      <div class="modal-foot">
+        <div class="built-with">
+          BUILT WITH<br>
+          <span>*codeplain · vercel · ai sdk</span>
+        </div>
+        <button class="modal-cta" id="introStart">
+          Show me the demo <span class="cta-arrow">→</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -389,6 +706,57 @@
       </div>
     </div>
   </main>
+
+  <script>
+    (function () {
+      var KEY = 'airgap_intro_seen';
+      var modal   = document.getElementById('introModal');
+      var startBtn = document.getElementById('introStart');
+      var closeBtn = document.getElementById('introClose');
+      var demoBtn = document.querySelector('.cta-btn');
+      if (!modal) return;
+
+      // Has this visitor already seen the intro?
+      var seen = false;
+      try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
+
+      if (!seen) {
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        if (startBtn) startBtn.focus();
+      }
+
+      function remember() {
+        try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      }
+
+      // Close without going to the demo (✕, backdrop, Escape)
+      function dismiss() {
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        remember();
+      }
+
+      // Close and guide the eye to the real demo button
+      function goToDemo() {
+        dismiss();
+        if (demoBtn) {
+          demoBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          demoBtn.classList.add('spotlight');
+          setTimeout(function () { demoBtn.classList.remove('spotlight'); }, 3600);
+        }
+      }
+
+      if (startBtn) startBtn.addEventListener('click', goToDemo);
+      if (closeBtn) closeBtn.addEventListener('click', dismiss);
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) dismiss();   // click on the dimmed backdrop
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) dismiss();
+      });
+    })();
+  </script>
 
 </body>
 </html>
