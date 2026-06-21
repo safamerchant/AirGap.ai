@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirGap.ai — The circuit breaker for autonomous AI agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── BRAND TOKENS from the pitch deck ── */
+    :root {
+      --bg:       #FBFAF7;   /* deck bg — warm off-white */
+      --ink:      #1F2530;   /* primary text */
+      --muted:    #9A948A;   /* warm grey */
+      --sub:      #5B6472;   /* cool grey */
+      --rule:     #E6E3DB;   /* divider lines */
+      --green:    #1F9D5C;   /* .ai accent green */
+      --amber:    #B5780F;   /* sandbox amber */
+      --amber-bg: #F3EFD8;   /* sandbox badge bg */
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* Logo: open-switch icon + AirGap.ai wordmark */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .logo-wordmark {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .logo-wordmark .dot-ai { color: var(--green); }
+
+    .logo-sub {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Nav right */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .status-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--green);
+    }
+    .status-live .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    .badge-sandbox {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--amber);
+      background: var(--amber-bg);
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    .nav-link {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--sub);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-link:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 40px 60px;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* Big headline — matches slide 12 "Give your agents autonomy." style */
+    .hero-headline {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .hero-headline .green {
+      color: var(--green);
+    }
+
+    /* Subtitle — deck uses regular weight Arial */
+    .hero-sub {
+      font-family: Arial, sans-serif;
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-top: 20px;
+      max-width: 520px;
+    }
+
+    /* ── PILL ROW (Intercept · Score · Decide) — matches deck step labels ── */
+    .pill-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .pill .pdot { width: 5px; height: 5px; border-radius: 50%; }
+
+    .pill-intercept { color: #C0391B; background: rgba(192,57,27,.08); border-color: rgba(192,57,27,.25); }
+    .pill-intercept .pdot { background: #C0391B; }
+    .pill-score     { color: var(--amber); background: var(--amber-bg); border-color: rgba(181,120,15,.3); }
+    .pill-score .pdot { background: var(--amber); }
+    .pill-decide    { color: var(--green); background: rgba(31,157,92,.08); border-color: rgba(31,157,92,.25); }
+    .pill-decide .pdot { background: var(--green); }
+
+    .pill-sep {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--rule);
+    }
+
+    /* ── BOTTOM ROW ── */
+    .bottom-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 72px;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule);
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* CTA button — matches the deck's flat outlined style */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--bg);
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
+      padding: 12px 28px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cta-btn:hover {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .cta-arrow {
+      font-size: 16px;
+      transition: transform 0.15s;
+    }
+    .cta-btn:hover .cta-arrow { transform: translateX(3px); }
+
+    .tagline {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    /* Built with row */
+    .built-with {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--sub);
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .built-with span { color: var(--muted); }
+
+    /* ── TICKER ── */
+    .ticker {
+      border-top: 1px solid var(--rule);
+      overflow: hidden;
+      padding: 14px 0;
+      margin-top: 40px;
+    }
+    .ticker-inner {
+      display: flex;
+      gap: 56px;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .ticker-item .tdot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    .ticker-item:nth-child(even) .tdot { background: var(--amber); animation-delay: 1s; }
+
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      main { padding: 48px 20px 40px; }
+      .built-with { text-align: left; }
+      .bottom-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="logo" aria-label="AirGap.ai">
+      <!-- Open-switch icon: exact style from the deck's circuit breaker -->
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="2" y1="16" x2="9" y2="16" stroke="#1F2530" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="9" cy="16" r="2" fill="#1F2530"/>
+        <circle cx="23" cy="16" r="2" fill="#1F2530"/>
+        <line x1="23" y1="16" x2="30" y2="16" stroke="#1F2530" stroke-width="2" stroke-linecap="round"/>
+        <!-- Switch arm open — angled up, green -->
+        <line x1="9" y1="16" x2="21" y2="9" stroke="#1F9D5C" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="22" cy="8.5" r="1.2" fill="#1F9D5C" opacity="0.6"/>
+      </svg>
+      <div>
+        <div class="logo-wordmark">AirGap<span class="dot-ai">.ai</span></div>
+        <div class="logo-sub">Agent Firewall</div>
+      </div>
+    </a>
+
+    <div class="nav-right">
+      <span class="status-live"><span class="dot"></span>LIVE</span>
+      <span class="badge-sandbox">SANDBOX</span>
+      <a href="console.html" class="nav-link">Console</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <div class="eyebrow">The circuit breaker for autonomous AI agents.</div>
+
+    <h1 class="hero-headline">
+      Give your agents autonomy.<br>
+      <span class="green">Keep your air gap.</span>
+    </h1>
+
+    <p class="hero-sub">
+      A middleware proxy + live control dashboard. Every action is intercepted,
+      scored against your budgets and risk bounds, and held for one-click human
+      approval if it crosses the line.
+    </p>
+
+    <!-- Intercept · Score · Decide pills -->
+    <div class="pill-row" aria-label="How it works: Intercept, Score, Decide">
+      <span class="pill pill-intercept"><span class="pdot"></span>Intercept</span>
+      <span class="pill-sep">·</span>
+      <span class="pill pill-score"><span class="pdot"></span>Score</span>
+      <span class="pill-sep">·</span>
+      <span class="pill pill-decide"><span class="pdot"></span>Decide</span>
+    </div>
+
+    <!-- CTA + meta -->
+    <div class="bottom-row">
+      <div>
+        <a href="console.html" class="cta-btn">
+          Demo the product <span class="cta-arrow">→</span>
+        </a>
+        <p class="tagline">
+          The "air gap" agents get full autonomy on the safe side<br>
+          of the breaker — your systems stay isolated from anything risky.
+        </p>
+      </div>
+      <div class="built-with">
+        BUILT WITH<br>
+        <span>*codeplain · vercel · ai sdk</span>
+      </div>
+    </div>
+
+    <!-- Scrolling status ticker -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-inner">
+        <span class="ticker-item"><span class="tdot"></span>Circuit breaker active</span>
+        <span class="ticker-item"><span class="tdot"></span>0 rogue actions passed</span>
+        <span class="ticker-item"><span class="tdot"></span>Agent monitoring live</span>
+        <span class="ticker-item"><span class="tdot"></span>Risk scoring online</span>
+        <span class="ticker-item"><span class="tdot"></span>Kill switch armed</span>
+        <span class="ticker-item"><span class="tdot"></span>Human-in-the-loop enabled</span>
+        <span class="ticker-item"><span class="tdot"></span>Policy engine running</span>
+        <!-- duplicate for seamless loop -->
+        <span class="ticker-item"><span class="tdot"></span>Circuit breaker active</span>
+        <span class="ticker-item"><span class="tdot"></span>0 rogue actions passed</span>
+        <span class="ticker-item"><span class="tdot"></span>Agent monitoring live</span>
+        <span class="ticker-item"><span class="tdot"></span>Risk scoring online</span>
+        <span class="ticker-item"><span class="tdot"></span>Kill switch armed</span>
+        <span class="ticker-item"><span class="tdot"></span>Human-in-the-loop enabled</span>
+        <span class="ticker-item"><span class="tdot"></span>Policy engine running</span>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
