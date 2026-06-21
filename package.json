@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "ai": "^4.0.0",
+    "@ai-sdk/google": "^1.0.0"
+  }
+}
