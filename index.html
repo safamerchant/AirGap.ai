@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -134,6 +133,13 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3.5L21 19.5H3z" stroke-linejoin="round"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
         <span id="alarmBannerText" style="flex:1;">DANGER — action frozen mid-flight.</span>
         <button id="alarmBannerBtn" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:6px 13px;border-radius:7px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);color:#fff;">Review</button>
+      </div>
+
+      <!-- recommendation banner -->
+      <div id="recBanner" style="display:none;align-items:center;gap:12px;padding:13px 26px;background:var(--amber);color:#1a1206;font-weight:600;font-size:13.5px;box-shadow:0 10px 30px -12px rgba(191,135,0,.55);animation:agBannerIn .4s cubic-bezier(.2,.7,.2,1);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7.5" x2="12" y2="13"/><circle cx="12" cy="16.5" r=".7" fill="currentColor"/></svg>
+        <span id="recBannerText" style="flex:1;">Recommended: pause the <b>code-writer</b> agent.</span>
+        <button id="recBannerBtn" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;padding:6px 14px;border-radius:7px;border:1px solid rgba(0,0,0,.28);background:rgba(0,0,0,.12);color:#1a1206;white-space:nowrap;">Pause code-writer</button>
       </div>
 
       <div style="padding:18px 26px 40px;">
@@ -361,6 +367,7 @@ class Component extends DCLogic {
 
     // ---------- CONFIG / STATE ----------
     const TOKEN_LIMIT=50000, API_LIMIT=100, RISK_LIMIT=10, RATE_N=5, RATE_WINDOW=9000, CIRC=314.16;
+    const MAX_PENDING=3; // hard cap on the approval queue — never flood past the first 3
     const PRICE_TOK=0.00012, PRICE_CALL=0.02;
     const SPEND_CAP=(cmp.props && cmp.props.spendCapUsd!=null)?cmp.props.spendCapUsd:8;
     const INTERVAL=(cmp.props && cmp.props.streamIntervalMs)||1500;
@@ -739,6 +746,11 @@ class Component extends DCLogic {
         tokenTimeline.push({t:Date.now(),n:a.tokens||0});
         renderMeters(); renderFleet(); addRow(a,res);
       } else {
+        // Queue already holding the cap — don't pile on. Just keep nudging the human.
+        if(res.verdict==='APPROVE' && pending.length>=MAX_PENDING){
+          const ra=agentById(a.agentId); if(ra) showRecommendation(ra);
+          return;
+        }
         haltedCount++; preventedSpend+=costOf(a);
         if(res.hi){ riskScore=Math.min(RISK_LIMIT,riskScore+(res.tags.indexOf('Loop pattern')>=0?1:2)); }
         if(ag) ag.status = res.verdict==='BLOCK'?'rogue':'elevated';
@@ -750,6 +762,7 @@ class Component extends DCLogic {
           // Borderline action — predefined rules escalate it for a human decision.
           pending.unshift({id:++uid, action:a, res:res, rowEl:row, modifying:false, expires: TIMEOUT_MS>0?Date.now()+TIMEOUT_MS:0});
           renderApprovals(); if(!userDismissed) showDrawer();
+          if(pending.length>=MAX_PENDING){ const ra=agentById(a.agentId); if(ra) showRecommendation(ra); }
         }
         // BLOCK is stopped automatically by policy — logged as an incident, no approval needed.
       }
@@ -763,7 +776,7 @@ class Component extends DCLogic {
     function setKill(on){
       killed=on;
       if(on){ agents.forEach(a=>a.status='halted'); $('killBtnText').textContent='RESUME ALL'; $('killBtn').style.background='var(--green)'; flashBanner.call(cmp,'KILL SWITCH ENGAGED — all agents frozen. No actions will execute.', true); beep(); $('liveDot').style.background='var(--red)'; }
-      else { agents.forEach(a=>a.status='ok'); $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; }
+      else { agents.forEach(a=>a.status='ok'); $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; dismissRecommendation(); $('liveDot').style.background='var(--green)'; }
       renderFleet(); renderMeters(); refreshStatus();
     }
 
@@ -811,6 +824,29 @@ class Component extends DCLogic {
     $('alarmBannerBtn').onclick=()=>openDrawer();
     $('killBtn').onclick=()=>setKill(!killed);
     function clearDemo(){ (cmp._demoTimers||[]).forEach(clearTimeout); cmp._demoTimers=[]; }
+
+    // ---------- RECOMMENDATION ----------
+    function showRecommendation(agent){
+      const b=$('recBanner'); if(!b||killed) return;
+      $('recBannerText').innerHTML='Recommended: pause the <b>'+esc(agent.name)+'</b> agent — '+MAX_PENDING+' high-risk actions flagged and held. It is the source of the spend spike.';
+      $('recBannerBtn').textContent='Pause '+agent.name;
+      b.style.display='flex';
+      b.setAttribute('data-agent', agent.id);
+    }
+    function dismissRecommendation(){ const b=$('recBanner'); if(b){ b.style.display='none'; b.removeAttribute('data-agent'); } }
+    $('recBannerBtn').onclick=()=>{
+      const id=$('recBanner').getAttribute('data-agent'); const ag=agentById(id);
+      clearDemo(); // cancel any further rogue actions still scheduled
+      if(ag){
+        ag.paused=true; ag.status='ok';
+        // drop this agent's queued approvals — the threat is contained
+        for(let i=pending.length-1;i>=0;i--){ if(pending[i].action.agentId===id){ markRow(pending[i].rowEl,'killed'); pending.splice(i,1); } }
+        renderFleet(); renderApprovals(); if(!pending.length) hideDrawer();
+        flashBanner.call(cmp, esc(ag.name)+' paused — its queued actions were dropped. The rest of the fleet keeps running.', false);
+      }
+      dismissRecommendation();
+    };
+
     // One agent goes rogue: up to 3 approval-needed actions, eased in gently.
     const ROGUE_VARIANTS=[
       {type:'LLM_CALL', target:'summariser/mass-batch', payload:{task:'summarise entire backlog', batch:900}, tokens:1400},
@@ -818,13 +854,15 @@ class Component extends DCLogic {
       {type:'LLM_CALL', target:'vector-index/full-rebuild', payload:{task:'re-embed corpus', docs:60000}, tokens:1900}
     ];
     async function rogueAction(agent, i){
-      if(killed)return;
+      if(killed || agent.paused) return;
       expandNav(); suppressCollapseOnce=true;
-      // push the budget to the edge so the policy engine flags this for human approval
-      tokens=Math.max(tokens, TOKEN_LIMIT-200); renderMeters();
+      // Visual drama: lift the token meter once, but NOT to the edge — normal traffic must still pass.
+      if(i===0){ tokens=Math.max(tokens, Math.round(TOKEN_LIMIT*0.6)); renderMeters(); }
       const v=ROGUE_VARIANTS[i%ROGUE_VARIANTS.length];
-      await process({type:v.type,target:v.target,payload:v.payload,tokens:v.tokens,agentId:agent.id});
-      agent.status='rogue'; renderFleet();
+      // This single action's weight alone blows the budget, so it's flagged for approval
+      // without permanently pinning the global counter (which is what flooded the queue).
+      await process({type:v.type,target:v.target,payload:v.payload,tokens:TOKEN_LIMIT+rint(8000,18000),agentId:agent.id});
+      if(!agent.paused){ agent.status='rogue'; renderFleet(); }
     }
     function runDemo(){
       clearDemo();
@@ -835,15 +873,15 @@ class Component extends DCLogic {
       at(500,  ()=>process(genSafe()));
       at(1700, ()=>process(genSafe()));
       at(3000, ()=>process(genSafe()));
-      // one of the four agents goes rogue — max 3 approval-needed incidents, eased in
-      const rogue=agents[rint(0,agents.length)];
+      // the code-writer agent goes rogue — exactly 3 approval-needed incidents, eased in
+      const rogue=agents.find(a=>a.name==='code-writer')||agents[0];
       at(4600,  ()=>rogueAction(rogue,0));
       at(8600,  ()=>rogueAction(rogue,1));
       at(12600, ()=>rogueAction(rogue,2));
     }
     $('runDemo').onclick=runDemo;
     $('fleet').addEventListener('click',(e)=>{ const b=e.target.closest('[data-agentpause]'); if(!b)return; const ag=agentById(b.getAttribute('data-agentpause')); if(!ag||ag.status==='halted')return; ag.paused=!ag.paused; renderFleet(); });
-    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[];demoStarted=false; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';a.paused=false;}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); expandNav(); renderMeters(); renderFleet(); drawChart(); pause(false); };
+    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[];demoStarted=false; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';a.paused=false;}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; dismissRecommendation(); $('liveDot').style.background='var(--green)'; renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); expandNav(); renderMeters(); renderFleet(); drawChart(); pause(false); };
     $('pauseBtn').onclick=()=>{ if(killed)return; pause(!paused); };
     this._key=(e)=>{ if(e.key==='Escape') closeDrawer(); };
     document.addEventListener('keydown',this._key);
