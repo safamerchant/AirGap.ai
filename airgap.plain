@@ -1,0 +1,131 @@
+---
+description: 'Airgap.AI — a circuit breaker and firewall for autonomous AI agents. It watches an agent action stream, meters cumulative cost and risk, evaluates every action against a policy engine, and intercepts dangerous or runaway actions so a human can approve, modify, or kill them. No agent action is ever executed against a real external system; the monitoring layer is fully sandboxed.'
+import:
+  - typescript-react-app-template
+---
+
+***definitions***
+
+- :Agent: is the autonomous AI agent being monitored. Its actions are produced by a simulated generator, with an optional ingestion endpoint for real agent traffic.
+
+- :AgentAction: is a single action an :Agent: proposes to take, such as a tool call, an API request, or a command. It has a type, a target, a payload, and an estimated token cost.
+
+- :ActionStream: is the live, ordered feed of :AgentAction: items as the :Agent: attempts them.
+
+- :Rule: is one policy statement that, when evaluated against an :AgentAction:, can allow it, block it, or require human approval, and always carries a human-readable reason.
+
+- :RuleSet: is the ordered collection of :Rule: items used to evaluate each :AgentAction:.
+
+- :PolicyEngine: is the deterministic component that evaluates an :AgentAction: against the :RuleSet: and returns a :Verdict:. Given the same action and rule set, it always returns the same verdict.
+
+- :Verdict: is the result of evaluating an :AgentAction:, one of "Allow", "Block", or "RequireApproval", together with the reason from the :Rule: that produced it.
+
+- :CostMeter: is the running tracker of cumulative estimated token cost, total API call count, and a data-destructive score accumulated across the :ActionStream:.
+
+- :Budget: is the set of thresholds for token cost, API call count, repeated-call rate, and destructive score that the :PolicyEngine: enforces.
+
+- :Interception: is the event raised when a :Verdict: is "Block" or "RequireApproval", which halts the :ActionStream:.
+
+- :InterceptPanel: is the UI that, on an :Interception:, shows a side-by-side comparison of what the :Agent: wants to do and why it was stopped, with controls to approve, modify, or kill the :AgentAction:.
+
+- :HumanDecision: is the user's response to an :Interception:, one of "Approve", "Modify", or "Kill".
+
+- :Alert: is a notification raised for every :Interception: and shown in an alert feed.
+
+- :Dashboard: is the main view that combines the :ActionStream:, the :CostMeter: readout, and the :Alert: feed.
+
+- :Explanation: is an optional plain-language description of a :Verdict: produced by an LLM, which falls back to the :Rule: reason when the LLM is unavailable.
+
+***implementation reqs***
+
+- The :App: is a TypeScript React single-page application deployable on Vercel with no configuration beyond environment variables.
+
+- A simulated :Agent: generator continuously produces :AgentAction: items so the :App: is fully demonstrable with no external dependency. An optional ingestion endpoint may accept real :AgentAction: items.
+
+- The :PolicyEngine: is implemented as a pure, deterministic function so verdicts are reproducible.
+
+- The :App: never executes any :AgentAction: against a real external system. The monitoring and interception layer is sandboxed.
+
+- :Explanation: text is produced by a server-side route that calls an LLM API using a key read from an environment variable and never exposed to the client. The :App: must function fully without this route by falling back to the :Rule: reason.
+
+- The simulated generator must be able to produce a "runaway loop" sequence, in which one :AgentAction: target is repeated rapidly, for live demonstration.
+
+***functional specs***
+
+- The :Dashboard: displays the :ActionStream: in real time, showing each :AgentAction: with its type, target, estimated token cost, and current status.
+
+  ***acceptance tests***
+
+  - When an :AgentAction: enters the :ActionStream:, it appears in the :Dashboard: with its type and target.
+
+  - Each displayed :AgentAction: shows a status reflecting its :Verdict: once evaluated.
+
+- The :CostMeter: accumulates and displays cumulative token cost, total API call count, and destructive score across the :ActionStream:, compared against the :Budget:.
+
+  ***acceptance tests***
+
+  - When an :AgentAction: is allowed, the :CostMeter: increases by that action's estimated token cost and increments the API call count.
+
+  - When a metered value crosses its :Budget: threshold, the :Dashboard: visibly flags that the threshold is exceeded.
+
+- The :PolicyEngine: evaluates every :AgentAction: against the :RuleSet: and produces a :Verdict: carrying the reason of the matching :Rule:.
+
+  ***acceptance tests***
+
+  - When an :AgentAction: matches no blocking or approval :Rule:, the :Verdict: is "Allow".
+
+  - When an :AgentAction: matches a blocking :Rule:, the :Verdict: is "Block" and carries that rule's reason.
+
+  - Evaluating the same :AgentAction: against the same :RuleSet: twice yields the same :Verdict:.
+
+- The :RuleSet: supports budget-threshold rules, repeated-call rate rules that detect loops, destructive-pattern rules, and allow-list and deny-list rules for targets.
+
+  ***acceptance tests***
+
+  - When cumulative cost would exceed the :Budget: token threshold, the budget rule produces a "Block" or "RequireApproval" :Verdict:.
+
+  - When the same target is called more times than the rate threshold within the window, the rate rule produces a non-"Allow" :Verdict:.
+
+  - When an :AgentAction: payload matches a destructive pattern, the destructive rule produces a "Block" :Verdict:.
+
+- When a :Verdict: is "Block" or "RequireApproval", an :Interception: halts the :ActionStream: and the :InterceptPanel: is shown.
+
+  ***acceptance tests***
+
+  - When an :Interception: is raised, no further :AgentAction: items are evaluated until the user submits a :HumanDecision:.
+
+  - The :InterceptPanel: becomes visible whenever an :Interception: occurs.
+
+- The :InterceptPanel: shows, side by side, what the :Agent: wants to do and why it was stopped, with controls to approve, modify, or kill the :AgentAction:.
+
+  ***acceptance tests***
+
+  - The :InterceptPanel: displays the intercepted :AgentAction: details and the :Verdict: reason together.
+
+  - The :InterceptPanel: presents distinct controls for "Approve", "Modify", and "Kill".
+
+- The :App: handles the :HumanDecision: by resuming, discarding, or re-evaluating the intercepted :AgentAction:.
+
+  ***acceptance tests***
+
+  - When the user chooses "Approve", the intercepted :AgentAction: is marked allowed and the :ActionStream: resumes.
+
+  - When the user chooses "Kill", the intercepted :AgentAction: is discarded, logged, and the :ActionStream: resumes with the next action.
+
+  - When the user chooses "Modify", the user can edit the :AgentAction: and the :PolicyEngine: re-evaluates the edited action.
+
+- The :App: raises an :Alert: for every :Interception: and shows it in the alert feed on the :Dashboard:.
+
+  ***acceptance tests***
+
+  - When an :Interception: occurs, a matching :Alert: is added to the alert feed.
+
+  - Each :Alert: records the intercepted :AgentAction: and the reason it was stopped.
+
+- The :InterceptPanel: shows an :Explanation: of the :Verdict:, using the LLM route when available and the :Rule: reason otherwise.
+
+  ***acceptance tests***
+
+  - When the LLM route returns successfully, its :Explanation: is shown in the :InterceptPanel:.
+
+  - When the LLM route is unavailable, the :InterceptPanel: shows the :Rule: reason as the :Explanation: without error.
