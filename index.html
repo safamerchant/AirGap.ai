@@ -48,7 +48,7 @@
         <div style="line-height:1;">
           <div style="display:flex;align-items:center;gap:7px;">
             <span style="font-size:8px;letter-spacing:.1em;color:var(--faint);font-family:'DM Sans',system-ui,sans-serif;">&#8212;</span>
-            <span style="font-weight:600;font-size:17px;letter-spacing:-.02em;color:var(--text);">AirGap<span style="color:var(--accent);">.ai</span></span>
+            <span style="font-weight:600;font-size:17px;letter-spacing:-.02em;color:var(--text);">AirGap<span style="color:#f5841f;">.ai</span></span>
             <span style="font-size:8px;letter-spacing:.1em;color:var(--faint);font-family:'DM Sans',system-ui,sans-serif;">&#8212;</span>
           </div>
           <div style="font-family:'DM Sans',system-ui,sans-serif;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:6px;">Agent Firewall</div>
@@ -271,9 +271,6 @@
         <section style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:rgba(14,63,126,.04) 0px 0px 0px 1px,rgba(42,51,69,.04) 0px 1px 1px -.5px,rgba(42,51,70,.04) 0px 3px 3px -1.5px,rgba(42,51,70,.04) 0px 6px 6px -3px,rgba(14,63,126,.04) 0px 12px 12px -6px,rgba(14,63,126,.04) 0px 24px 24px -12px;">
           <span style="font-family:'DM Sans',system-ui,sans-serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-right:4px;">Inject rogue agent</span>
           <button id="runDemo" style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;padding:9px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;transition:all .15s;">&#9654; Run demo</button>
-          <button id="injDestruct" data-danger style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Destructive write</button>
-          <button id="injLoop" data-danger style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Runaway loop</button>
-          <button id="injBudget" data-amber style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);transition:all .15s;">Spike token budget</button>
           <button id="resetBtn" style="font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);transition:all .15s;margin-left:auto;">Reset session</button>
         </section>
 
@@ -373,12 +370,13 @@ class Component extends DCLogic {
     let lastMetered=0, baselineJump=null, lastAnomaly=0;
     let spendSamples=[], tokenTimeline=[];
     const pending = []; const agents = [
-      {id:'a1', name:'code-writer', role:'Claude Code', spend:0, tok:0, status:'ok'},
-      {id:'a2', name:'data-sync', role:'ETL pipeline', spend:0, tok:0, status:'ok'},
-      {id:'a3', name:'ops-bot', role:'DevOps agent', spend:0, tok:0, status:'ok'},
-      {id:'a4', name:'support-ai', role:'Support agent', spend:0, tok:0, status:'ok'}
+      {id:'a1', name:'code-writer', role:'Claude Code', spend:0, tok:0, status:'ok', paused:false},
+      {id:'a2', name:'data-sync', role:'ETL pipeline', spend:0, tok:0, status:'ok', paused:false},
+      {id:'a3', name:'ops-bot', role:'DevOps agent', spend:0, tok:0, status:'ok', paused:false},
+      {id:'a4', name:'support-ai', role:'Support agent', spend:0, tok:0, status:'ok', paused:false}
     ];
     let suppressCollapseOnce=false;
+    let demoStarted=false;
     const safeTemplates=[
       {type:'API_CALL',target:'pricing-svc/staging',payload:{q:'GET /rates'},tokens:[180,420]},
       {type:'DB_QUERY',target:'analytics_read',payload:{sql:'SELECT count(*) FROM events'},tokens:[120,360]},
@@ -396,7 +394,7 @@ class Component extends DCLogic {
     const costOf=(a)=>((a&&a.tokens)?a.tokens:0)*PRICE_TOK+PRICE_CALL;
     const esc=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const agentById=(id)=>agents.find(a=>a.id===id);
-    const pickAgent=()=>{ const av=agents.filter(a=>a.status!=='halted'); return av[rint(0,av.length)]||agents[0]; };
+    const pickAgent=()=>{ const av=agents.filter(a=>a.status!=='halted' && !a.paused); return av[rint(0,av.length)]||agents.find(a=>a.status!=='halted')||agents[0]; };
     const fmtClock=(ms)=>{ const s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
 
     // ---------- AUDIO (dark-mode alarm) ----------
@@ -439,12 +437,7 @@ class Component extends DCLogic {
         const v=await r.json(); setBackend(true); return v;
       }catch(e){ setBackend(false); return evaluateLocal(a); }
     }
-    function setBackend(on){
-      let el=document.getElementById('agBackendBadge');
-      if(!el){ el=document.createElement('div'); el.id='agBackendBadge'; el.style.cssText="position:fixed;left:14px;bottom:14px;z-index:99999;font:600 10px/1 'DM Sans',system-ui,sans-serif;letter-spacing:.1em;padding:8px 12px;border-radius:999px;border:1px solid;transition:all .3s;"; document.body.appendChild(el); }
-      if(on){ el.textContent='\u25CF BACKEND LIVE'; el.style.color='#0c9a6a'; el.style.background='rgba(12,154,106,.12)'; el.style.borderColor='rgba(12,154,106,.4)'; }
-      else { el.textContent='\u25CF BACKEND OFFLINE \u00B7 local fallback'; el.style.color='#bd6c0a'; el.style.background='rgba(189,108,10,.12)'; el.style.borderColor='rgba(189,108,10,.4)'; }
-    }
+    function setBackend(on){ /* bottom-left backend badge removed per design */ }
     async function pingBackend(){ try{ const r=await fetch(EVAL_URL,{cache:'no-store'}); setBackend(r.ok); }catch(e){ setBackend(false); } }
 
     // Local engine — offline fallback only, so a demo never dies mid-stage.
@@ -552,9 +545,14 @@ class Component extends DCLogic {
     // ---------- FLEET ----------
     function renderFleet(){
       const f=$('fleet'); f.innerHTML = agents.map(a=>{
-        const map = a.status==='halted'?{d:'var(--faint)',t:'HALTED',c:'var(--faint)'} : a.status==='rogue'?{d:'var(--red)',t:'ROGUE',c:'var(--redtext)'} : a.status==='elevated'?{d:'var(--amber)',t:'ELEVATED',c:'var(--amber)'} : {d:'var(--green)',t:'ONLINE',c:'var(--green)'};
-        const beat = a.status==='ok'||a.status==='elevated' ? 'animation:agBeat 1.6s infinite;' : '';
-        return '<div style="border:1px solid '+(a.status==='rogue'?'color-mix(in srgb,var(--red) 35%,var(--border))':'var(--border2)')+';border-radius:11px;padding:11px 12px;background:var(--panel2);">'+
+        const map = a.status==='halted'?{d:'var(--faint)',t:'HALTED',c:'var(--faint)'} : a.paused?{d:'var(--faint)',t:'PAUSED',c:'var(--muted)'} : a.status==='rogue'?{d:'var(--red)',t:'ROGUE',c:'var(--redtext)'} : a.status==='elevated'?{d:'var(--amber)',t:'ELEVATED',c:'var(--amber)'} : {d:'var(--green)',t:'ONLINE',c:'var(--green)'};
+        const beat = !a.paused && (a.status==='ok'||a.status==='elevated') ? 'animation:agBeat 1.6s infinite;' : '';
+        const disabled = a.status==='halted';
+        const btnLabel = a.paused ? 'Resume' : 'Pause';
+        const btnStyle = a.paused
+          ? 'border:1px solid color-mix(in srgb,var(--green) 40%,transparent);background:var(--green-weak);color:var(--green);'
+          : 'border:1px solid var(--border);background:var(--panel);color:var(--muted);';
+        return '<div style="border:1px solid '+(a.status==='rogue'?'color-mix(in srgb,var(--red) 35%,var(--border))':'var(--border2)')+';border-radius:11px;padding:11px 12px;background:var(--panel2);opacity:'+(a.paused?'.72':'1')+';">'+
           '<div style="display:flex;align-items:center;justify-content:space-between;">'+
             '<div style="display:flex;align-items:center;gap:7px;min-width:0;"><span style="width:7px;height:7px;border-radius:50%;background:'+map.d+';'+beat+'flex:0 0 auto;"></span><span style="font-family:\'DM Sans\',system-ui,sans-serif;font-size:11.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+a.name+'</span></div>'+
             '<span style="font-family:\'DM Sans\',system-ui,sans-serif;font-size:8px;font-weight:700;letter-spacing:.1em;color:'+map.c+';flex:0 0 auto;">'+map.t+'</span>'+
@@ -563,9 +561,10 @@ class Component extends DCLogic {
             '<span style="font-family:\'DM Sans\',system-ui,sans-serif;font-size:9px;color:var(--faint);">'+a.role+'</span>'+
             '<span style="font-family:\'DM Sans\',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--text);">$'+a.spend.toFixed(2)+'</span>'+
           '</div>'+
+          '<button data-agentpause="'+a.id+'"'+(disabled?' disabled':'')+' style="margin-top:10px;width:100%;font-family:\'DM Sans\',system-ui,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.04em;cursor:'+(disabled?'not-allowed':'pointer')+';padding:6px 8px;border-radius:7px;opacity:'+(disabled?'.5':'1')+';transition:all .15s;'+btnStyle+'">'+btnLabel+'</button>'+
         '</div>';
       }).join('');
-      $('fleetMeta').textContent = agents.filter(a=>a.status!=='halted').length+' online';
+      $('fleetMeta').textContent = agents.filter(a=>a.status!=='halted' && !a.paused).length+' online';
     }
 
     // ---------- CHART ----------
@@ -776,7 +775,7 @@ class Component extends DCLogic {
       const metered=tokens*PRICE_TOK+apiCalls*PRICE_CALL;
       const jump=metered-lastMetered;
       const samp={v:metered, anom:false};
-      if(jump>0.5){ samp.anom=true; if(now-lastAnomaly>3000){ lastAnomaly=now; const mult=(jump/Math.max(baselineJump||0.02,0.01)).toFixed(1); addAlert({type:'SPEND_SPIKE',target:'fleet'},{verdict:'APPROVE',reason:'Spend velocity anomaly — $'+jump.toFixed(2)+' in one interval ('+mult+'\u00d7 baseline).',tags:['Velocity','Anomaly'],hi:false}); } }
+      if(demoStarted && jump>0.5){ samp.anom=true; if(now-lastAnomaly>3000){ lastAnomaly=now; const mult=(jump/Math.max(baselineJump||0.02,0.01)).toFixed(1); addAlert({type:'SPEND_SPIKE',target:'fleet'},{verdict:'APPROVE',reason:'Spend velocity anomaly — $'+jump.toFixed(2)+' in one interval ('+mult+'\u00d7 baseline).',tags:['Velocity','Anomaly'],hi:false}); } }
       baselineJump = baselineJump==null ? Math.max(jump,0.02) : baselineJump*0.9+Math.max(jump,0)*0.1;
       lastMetered=metered;
       spendSamples.push(samp); if(spendSamples.length>110)spendSamples.shift();
@@ -812,24 +811,39 @@ class Component extends DCLogic {
     $('alarmBannerBtn').onclick=()=>openDrawer();
     $('killBtn').onclick=()=>setKill(!killed);
     function clearDemo(){ (cmp._demoTimers||[]).forEach(clearTimeout); cmp._demoTimers=[]; }
+    // One agent goes rogue: up to 3 approval-needed actions, eased in gently.
+    const ROGUE_VARIANTS=[
+      {type:'LLM_CALL', target:'summariser/mass-batch', payload:{task:'summarise entire backlog', batch:900}, tokens:1400},
+      {type:'API_CALL', target:'enrichment-svc/bulk', payload:{call:'POST /enrich', batch:1200}, tokens:1700},
+      {type:'LLM_CALL', target:'vector-index/full-rebuild', payload:{task:'re-embed corpus', docs:60000}, tokens:1900}
+    ];
+    async function rogueAction(agent, i){
+      if(killed)return;
+      expandNav(); suppressCollapseOnce=true;
+      // push the budget to the edge so the policy engine flags this for human approval
+      tokens=Math.max(tokens, TOKEN_LIMIT-200); renderMeters();
+      const v=ROGUE_VARIANTS[i%ROGUE_VARIANTS.length];
+      await process({type:v.type,target:v.target,payload:v.payload,tokens:v.tokens,agentId:agent.id});
+      agent.status='rogue'; renderFleet();
+    }
     function runDemo(){
       clearDemo();
       $('resetBtn').click();              // clean slate
+      demoStarted=true;
       const at=(ms,fn)=>cmp._demoTimers.push(setTimeout(fn,ms));
       // a few safe actions first — show normal monitoring (all ALLOW)
       at(500,  ()=>process(genSafe()));
       at(1700, ()=>process(genSafe()));
       at(3000, ()=>process(genSafe()));
-      // then three controlled incidents, well spaced
-      at(4600, ()=>$('injDestruct').click());   // BLOCK — destructive on prod
-      at(8600, ()=>$('injLoop').click());       // BLOCK — runaway loop
-      at(12600,()=>$('injBudget').click());     // APPROVE — budget spike
+      // one of the four agents goes rogue — max 3 approval-needed incidents, eased in
+      const rogue=agents[rint(0,agents.length)];
+      at(4600,  ()=>rogueAction(rogue,0));
+      at(8600,  ()=>rogueAction(rogue,1));
+      at(12600, ()=>rogueAction(rogue,2));
     }
     $('runDemo').onclick=runDemo;
-    $('injDestruct').onclick=()=>{ expandNav(); suppressCollapseOnce=true; const a={type:'FS_WRITE',target:'database_prod',payload:{op:'OVERWRITE',data:'rm -rf /var/data'},tokens:rint(800,1600),agentId:'a3'}; const ag=agentById('a3'); process(a); };
-    $('injLoop').onclick=()=>{ expandNav(); suppressCollapseOnce=true; const tgt='payments-api/charge'; for(let i=0;i<RATE_N;i++)recent.push({target:tgt,t:Date.now()}); process({type:'API_CALL',target:tgt,payload:{call:'POST /charge',iteration:RATE_N+1},tokens:rint(300,700),agentId:'a2'}); };
-    $('injBudget').onclick=()=>{ expandNav(); suppressCollapseOnce=true; tokens=TOKEN_LIMIT-200; renderMeters(); process({type:'LLM_CALL',target:'summariser',payload:{task:'large batch summarise',batch:500},tokens:1200,agentId:'a4'}); };
-    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[]; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); expandNav(); renderMeters(); renderFleet(); drawChart(); pause(false); };
+    $('fleet').addEventListener('click',(e)=>{ const b=e.target.closest('[data-agentpause]'); if(!b)return; const ag=agentById(b.getAttribute('data-agentpause')); if(!ag||ag.status==='halted')return; ag.paused=!ag.paused; renderFleet(); });
+    $('resetBtn').onclick=()=>{ tokens=0;apiCalls=0;riskScore=0;alertsCount=0;recent=[];preventedSpend=0;haltedCount=0;pending.length=0;killed=false;lastMetered=0;baselineJump=null;spendSamples=[];tokenTimeline=[];demoStarted=false; agents.forEach(a=>{a.spend=0;a.tok=0;a.status='ok';a.paused=false;}); streamEl.innerHTML='';alertsEl.innerHTML=''; streamEl.appendChild(streamEmpty);streamEmpty.style.display='flex'; alertsEl.appendChild(alertEmpty);alertEmpty.style.display='flex'; $('alertMeta').textContent='0 incidents'; const nb=$('navIncBadge'); nb.textContent='0'; nb.style.color='var(--faint)'; nb.style.background='var(--panel)'; nb.style.borderColor='var(--border2)'; $('killBtnText').textContent='KILL ALL'; $('killBtn').style.background='var(--red)'; $('alarmBanner').style.display='none'; $('liveDot').style.background='var(--green)'; renderApprovals(); userDismissed=false; drawerLocked=false; clearDemo(); hideDrawer(); expandNav(); renderMeters(); renderFleet(); drawChart(); pause(false); };
     $('pauseBtn').onclick=()=>{ if(killed)return; pause(!paused); };
     this._key=(e)=>{ if(e.key==='Escape') closeDrawer(); };
     document.addEventListener('keydown',this._key);
